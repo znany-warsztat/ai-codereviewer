@@ -212,10 +212,18 @@ async function main() {
       head: newHeadSha,
     });
 
-    console.log(response)
-    console.log(response.data)
+    console.log(response);
+    console.log(response.data);
 
-    diff = String(response.data);
+    try {
+      // Ensure response data is valid JSON
+      JSON.parse(response.data);
+      diff = String(response.data);
+    } catch (error) {
+      console.error("Invalid JSON response:", error);
+      return;
+    }
+
     console.log(diff);
   } else {
     console.log("Unsupported event:", process.env.GITHUB_EVENT_NAME);
