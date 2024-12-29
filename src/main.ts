@@ -188,6 +188,8 @@ async function main() {
     readFileSync(process.env.GITHUB_EVENT_PATH ?? "", "utf8")
   );
 
+  console.log("Event Data:", eventData);
+
   if (eventData.action === "opened") {
     diff = await getDiff(
       prDetails.owner,
@@ -197,6 +199,8 @@ async function main() {
   } else if (eventData.action === "synchronize") {
     const newBaseSha = eventData.before;
     const newHeadSha = eventData.after;
+
+    console.log("Base SHA:", newBaseSha, "Head SHA:", newHeadSha);
 
     const response = await octokit.repos.compareCommits({
       headers: {
@@ -208,7 +212,11 @@ async function main() {
       head: newHeadSha,
     });
 
+    console.log(response)
+    console.log(response.data)
+
     diff = String(response.data);
+    console.log(diff);
   } else {
     console.log("Unsupported event:", process.env.GITHUB_EVENT_NAME);
     return;
